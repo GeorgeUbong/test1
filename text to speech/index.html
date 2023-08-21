@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech App with Download</title>
+</head>
+<style>
+    body{
+        margin: 0;
+        padding: 0;
+        background: white;
+        overflow: visible;
+    }
+    h1{
+        text-align: center;
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;
+
+    }
+    textarea{
+        background: #c4c4c4;
+        margin-left: 36%;
+        width: 18rem;
+        height: 22rem;
+        border-radius: 15px;
+        padding-left: 10px;
+        padding-top: 5px;
+        border: none;
+    }
+    button{
+        width: 80px;
+        border-radius: 5px;
+        border: 1px solid #000000;
+        height: 30px;
+        position: relative;
+        margin-top: 5px;
+       margin-left: 26rem;
+    }
+    a{
+        border-radius: 5px;
+        height: 50px;
+        position: relative;
+        margin-left: 30px;
+        width: 110px;
+        text-decoration: none;
+        font-family: 'Courier New', Courier, monospace;
+        border: 1px solid black;
+        background: yellow;
+        color: #000000;
+    }
+
+    /*tab screen*/
+    @media only screen and (max-width:600px) {
+        button{
+        width: 80px;
+        border-radius: 5px;
+        border: 1px solid #000000;
+        height: 30px;
+        position: relative;
+        margin-top: 5px;
+       margin-left: 5rem;
+    }
+    textarea{
+        background: #c4c4c4;
+        margin-left: 15%;
+        width: 18rem;
+        height: 22rem;
+        border-radius: 15px;
+        padding-left: 10px;
+        padding-top: 5px;
+        border: none;
+    }
+    }
+</style>
+<body>
+    <h1>Synthesis Speech AI</h1>
+    <textarea id="input-text" placeholder="Enter text to be spoken"></textarea>
+    <button id="speak-button">Speak</button>
+    <a id="download-link" style="display: none;">Download Audio</a>
+
+    <script>
+        const inputText = document.getElementById('input-text');
+        const speakButton = document.getElementById('speak-button');
+        const downloadLink = document.getElementById('download-link');
+
+        const synth = window.speechSynthesis;
+
+        // Function to speak the provided text
+        function speakText(text) {
+            if (synth.speaking) {
+                console.error('Speech synthesis already in progress');
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            synth.speak(utterance);
+
+            utterance.onend = function() {
+                downloadLink.style.display = 'inline';
+                const audioBlob = new Blob([new Uint8Array(0)], { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                downloadLink.href = audioUrl;
+                downloadLink.download = 'speech.wav';
+            };
+        }
+
+        // Event listener for the "Speak" button
+        speakButton.addEventListener('click', () => {
+            const text = inputText.value;
+            if (text.trim() !== '') {
+                speakText(text);
+            }
+        });
+    </script>
+</body>
+</html>
